@@ -2,24 +2,18 @@ package com.sigepres.servicioweb.entities;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 public class User implements Serializable {
     @Id
@@ -42,7 +36,7 @@ public class User implements Serializable {
     @Column(name = "dni_number", unique = true)
     private String dniNumber;
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
 
     @Column(name = "email", unique = true)
@@ -56,11 +50,5 @@ public class User implements Serializable {
 
     @Column(name = "is_active")
     private boolean isActive;
-
-    @OneToOne(mappedBy = "user")
-    private Employee employee;
-
-    @OneToOne(mappedBy = "user")
-    private Customer customer;
 
 }
