@@ -1,10 +1,10 @@
 package com.sigepres.servicioweb.controller;
 
+import com.sigepres.servicioweb.dto.AuthResponse;
 import com.sigepres.servicioweb.dto.LoginRequest;
-import com.sigepres.servicioweb.dto.UserRegisterRequest;
-import com.sigepres.servicioweb.entities.User;
-import com.sigepres.servicioweb.repository.IUserRepository;
+import com.sigepres.servicioweb.dto.RegisterRequest;
 
+import com.sigepres.servicioweb.service.SessionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +16,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @GetMapping(value = "/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    private final SessionServiceImpl sessionService;
 
-        return ResponseEntity.ok("Acceso permitido");
+    @PostMapping(value = "/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request)
+    {
+        return ResponseEntity.ok(sessionService.signIn(request));
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserRegisterRequest> register( @Valid @RequestBody UserRegisterRequest request) {
-        return ResponseEntity.ok(request);
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request)
+    {
+        return ResponseEntity.ok(sessionService.register(request));
     }
-
 }
 
