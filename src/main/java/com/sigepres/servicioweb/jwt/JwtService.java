@@ -19,10 +19,10 @@ import java.util.function.Function;
 public class JwtService {
 
     /**
-     * Llave para cifrar el jwt, recibe su valor de application.properties
+     * Llave para cifrar el jwt, recibe su valor de variables de entorno
      */
-    @Value("${jwt.secret.key}")
-    private static String SECRET_KEY;
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
 
     public String getToken(UserDetails user) {
         return getToken(new HashMap<>(), user);
@@ -47,7 +47,7 @@ public class JwtService {
      * Obtiene y devuelve una clave a partir de la clave secreta codificada en base64.
      */
     private Key getKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(SECRET_KEY = "mmmmmmmmmm");
+        byte[] keyBytes= Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
