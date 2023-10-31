@@ -22,7 +22,29 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> new ErrorDto(400, fieldError.getDefaultMessage()))
                 .distinct()
                 .toList();
-
         return new ResponseEntity<>(errorDtos, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DuplicateValueException.class)
+    public ResponseEntity<ErrorDto> duplicateFieldException(Exception e){
+        ErrorDto errorDto = new ErrorDto(400, e.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDto> userNotFoundException(Exception e){
+        ErrorDto errorDto = new ErrorDto(404, e.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PasswordIncorrectException.class)
+    public ResponseEntity<ErrorDto> passwordIncorrectException(Exception e){
+        ErrorDto errorDto = new ErrorDto(404, e.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    /*@ExceptionHandler(PasswordIncorrectException.class)
+    public ProblemDetail passwordIncorrectException(Exception e){
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    }*/
 }
