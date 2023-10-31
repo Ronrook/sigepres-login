@@ -3,8 +3,10 @@ package com.sigepres.servicioweb.dto;
 
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDate;
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisterRequest {
+public class RegisterRequest {
 
     @NotBlank(message = "El primer nombre del usuario no debe ser nulo o vacío")
     @Size(max =50, message = "El primer nombre del usuario no debe ser mayor a 50 caracteres")
@@ -35,6 +37,8 @@ public class UserRegisterRequest {
     private String dniNumber;
 
     @Past
+    @NotNull
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate birthdate;
 
     @NotBlank(message = "El Email del usuario no debe ser nulo o vacío")
@@ -49,4 +53,8 @@ public class UserRegisterRequest {
 
     @AssertTrue
     private Boolean isActive;
+
+    private String password;
+
+    private String role;
 }
