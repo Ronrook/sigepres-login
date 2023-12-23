@@ -42,6 +42,11 @@ public class GlobalExceptionHandler {
         ErrorDto errorDto = new ErrorDto(404, e.getMessage());
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorDto> NotFoundException(Exception e){
+        ErrorDto errorDto = new ErrorDto(404, e.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
 
     /*@ExceptionHandler(PasswordIncorrectException.class)
     public ProblemDetail passwordIncorrectException(Exception e){
