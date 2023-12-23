@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -40,7 +39,7 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authRequest ->
                 authRequest
-                    .requestMatchers("/auth/login").permitAll() // permite el acceso a cualquier ruta que comience con este String
+                    .requestMatchers("/api/v1/**").permitAll() // permite el acceso a cualquier ruta que comience con este String
                     .anyRequest().authenticated() // Otras rutas se deben autenticar
             )
                 .sessionManagement(sessionManager->
