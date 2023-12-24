@@ -16,6 +16,8 @@ public interface IAppointmentService {
 
     List<AppointmentResponseDTO> getAppointmentsByEmployeeId(Integer employeeId);
 
+    /*
+
     List<AppointmentResponseDTO> getAppointmentsByCustomerId(Integer customerId);
 
     List<AppointmentResponseDTO> getAppointmentsBetweenDates(LocalDate startDate, LocalDate endDate);
@@ -29,6 +31,6 @@ public interface IAppointmentService {
     AppointmentResponseDTO updateAppointment(int appointmentId, Appointment updatedAppointment);
 
     void deleteAppointment(int appointmentId);
-
+*/
 
 }
