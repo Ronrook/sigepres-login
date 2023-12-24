@@ -3,7 +3,9 @@ package com.sigepres.servicioweb.service;
 import com.sigepres.servicioweb.entities.Customer;
 import com.sigepres.servicioweb.exceptions.UserNotFoundException;
 import com.sigepres.servicioweb.repository.ICustomerRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CustomerServiceImpl implements ICustomerService{
 
     private final ICustomerRepository customerRepository;
