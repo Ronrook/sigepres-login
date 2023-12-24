@@ -6,8 +6,6 @@ package com.sigepres.servicioweb.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
 
 import java.time.LocalDate;
 
