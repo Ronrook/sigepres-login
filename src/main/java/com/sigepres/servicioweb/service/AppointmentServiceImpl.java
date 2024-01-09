@@ -69,7 +69,6 @@ public class AppointmentServiceImpl implements IAppointmentService {
         appointment.setCustomer(customer);
         appointment.setService(service);
         appointment.setEmployee(employee);
-        appointment.setAttended(false);
         return appointment;
     }
 
@@ -123,51 +122,108 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
                 .toList();
     }
-/*
+
+    @Override
+    public List<AppointmentResponseDTO> getAllAppointments(){
+
+        return appointmentRepository.findAll().stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
+    }
+
     @Override
     public List<AppointmentResponseDTO> getAppointmentsBetweenDates(LocalDate startDate, LocalDate endDate) {
-        return appointmentRepository.getAppointmentsBetweenDates(startDate, endDate);
+
+        List<Appointment> appointments = appointmentRepository.findByAppointmentDatetimeBetween(startDate, endDate);
+
+        return appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
+    }
+
+
+    @Override
+    public List<AppointmentResponseDTO> getAppointmentsByCustomerAndDates(Integer customerId, LocalDate startDate, LocalDate endDate) {
+
+        // validar si existe cliente
+        customerService.getCustomerById(customerId);
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByCustomerAndDateBetween(customerId, startDate, endDate);
+
+        return appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
     }
 
     @Override
-    public List<Appointment> getAppointmentsByCustomerAndDates(Integer customerId, LocalDate startDate, LocalDate endDate) {
-        return appointmentRepository.getAppointmentsByCustomerAndDates(customerId, startDate, endDate);
+    public List<AppointmentResponseDTO> getAppointmentsByEmployeeAndDates(Integer employeeId, LocalDate startDate, LocalDate endDate) {
+
+        // validar si existe empleado
+        employeeService.getEmployeeById(employeeId);
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByEmployeeAndDateBetween(employeeId, startDate, endDate);
+
+        return appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
+    }
+
+    public List<AppointmentResponseDTO> getAppointmentsByCustomerAndDate(Integer customerId, LocalDate date){
+
+        // validar si existe cliente
+        customerService.getCustomerById(customerId);
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByCustomerAndDate(customerId, date);
+
+        return appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
+    }
+
+    public List<AppointmentResponseDTO> getAppointmentsByEmployeeAndDate(Integer employeeId, LocalDate date){
+        // validar si existe empleado
+        employeeService.getEmployeeById(employeeId);
+
+        List<Appointment> appointments = appointmentRepository.findAppointmentsByEmployeeAndDate(employeeId, date);
+
+        return appointments.stream()
+                .map(appointment -> modelMapper.map(appointment, AppointmentResponseDTO.class))
+                .toList();
     }
 
     @Override
-    public List<Appointment> getAppointmentsByEmployeeAndDates(Integer employeeId, LocalDate startDate, LocalDate endDate) {
-        return appointmentRepository.getAppointmentsByEmployeeAndDates(employeeId, startDate, endDate);
-    }
+    public AppointmentResponseDTO updateAppointment(Integer appointmentId, AppointmentRequestDTO updatedAppointment) {
 
-    @Override
-    public List<Appointment> getAppointmentsByCustomer(Integer customerId) {
-        return appointmentRepository.getAppointmentsByCustomer(customerId);
-    }
 
-    @Override
-    public Appointment updateAppointment(int appointmentId, Appointment updatedAppointment) {
-        if (!appointmentRepository.existsById(appointmentId)) {
-            throw new EntityNotFoundException("Cita no encontrada con ID: " + appointmentId);
-        }
 
-        if (updatedAppointment.getAppointmentDatetime().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de la cita debe ser en el futuro.");
-        }
-
-        // Otras validaciones según tus necesidades
-
+        // validar si existe cita a actualizar
         Appointment existingAppointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cita no encontrada"));
 
-        existingAppointment.setAppointmentDatetime(updatedAppointment.getAppointmentDatetime());
-        existingAppointment.setCustomer(updatedAppointment.getCustomer());
-        existingAppointment.setService(updatedAppointment.getService());
-        existingAppointment.setEmployee(updatedAppointment.getEmployee());
-        existingAppointment.setAttended(updatedAppointment.isAttended());
+        // Verificación de disponibilidad, verificar si el empleado esta disponible en fecha y hora
+        this.validateAvailability(updatedAppointment);
 
-        return appointmentRepository.save(existingAppointment);
+
+        // Mapeo de los datos de entrada a la entidad existente
+        mapToExistingAppointment(updatedAppointment, existingAppointment);
+
+        // Guardar la cita en la base de datos
+        appointmentRepository.save(existingAppointment);
+
+        // Mapeo de entidad a dto response
+        return modelMapper.map(existingAppointment, AppointmentResponseDTO.class);
     }
 
+    private void mapToExistingAppointment(AppointmentRequestDTO source, Appointment destination) {
+
+        destination.setAppointmentDate(source.getAppointmentDate());
+        destination.setAppointmentStartTime(source.getAppointmentStartTime());
+        destination.setAppointmentEndTime(source.getAppointmentEndTime());
+        destination.setAttended(source.isAttended());
+    }
+
+
+/*
     @Override
     public void deleteAppointment(int appointmentId) {
         if (!appointmentRepository.existsById(appointmentId)) {

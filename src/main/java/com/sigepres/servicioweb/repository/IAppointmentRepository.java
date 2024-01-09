@@ -21,5 +21,25 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Integ
 
     List<Appointment> findByEmployeeId(Integer employeeId);
     List<Appointment> findByCustomerId(Integer customerId);
+
+    @Query("SELECT a FROM Appointment a WHERE a.appointmentDate BETWEEN :startDate AND :endDate")
+    List<Appointment> findByAppointmentDatetimeBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT a FROM Appointment a WHERE a.customer.id = :customerId AND a.appointmentDate BETWEEN :startDate AND :endDate")
+    List<Appointment> findAppointmentsByCustomerAndDateBetween(@Param("customerId") Integer customerId, @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT a FROM Appointment a WHERE a.employee.id = :employeeId AND a.appointmentDate BETWEEN :startDate AND :endDate")
+    List<Appointment> findAppointmentsByEmployeeAndDateBetween(@Param("employeeId") Integer employeeId, @Param("startDate") LocalDate startDate,
+           @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT a FROM Appointment a WHERE a.customer.id = :customerId AND a.appointmentDate = :date")
+    List<Appointment> findAppointmentsByCustomerAndDate(@Param("customerId") Integer customerId, @Param("date") LocalDate date);
+
+    @Query("SELECT a FROM Appointment a WHERE a.employee.id = :employeeId AND a.appointmentDate = :date")
+    List<Appointment> findAppointmentsByEmployeeAndDate(@Param("employeeId") Integer employeeId, @Param("date") LocalDate date);
+
+
+
 }
 
