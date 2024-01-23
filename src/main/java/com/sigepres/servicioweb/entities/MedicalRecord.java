@@ -1,20 +1,27 @@
 package com.sigepres.servicioweb.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "medical_history")
-public class MedicalHistory {
+public class MedicalRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "medical_history_id")
-    private int medicalHistoryId;
+    private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "customer_id", nullable = false)
     private Customer customer;
 
     @Column(name = "creation_date", nullable = false)
@@ -32,7 +39,7 @@ public class MedicalHistory {
     @Column(name = "history_is_active", nullable = false)
     private boolean historyIsActive;
 
-    @OneToMany(mappedBy = "medicalHistory", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "medicalRecord", fetch = FetchType.EAGER)
     private List<Note> notes;
 
 }
