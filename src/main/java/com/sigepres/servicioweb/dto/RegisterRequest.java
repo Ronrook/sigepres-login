@@ -35,8 +35,8 @@ public class RegisterRequest {
     private String dniNumber;
 
     @Past
-    @NotNull
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @NotNull(message = "La fecha no debe ser nula")
+    @JsonFormat(pattern="dd-MM-yyyy")
     private LocalDate birthdate;
 
     @NotBlank(message = "El Email del usuario no debe ser nulo o vacío")
