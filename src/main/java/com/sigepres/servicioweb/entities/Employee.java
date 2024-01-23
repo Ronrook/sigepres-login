@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -28,17 +29,21 @@ public class Employee extends User implements Serializable, UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Appointment> appointments; // Relación uno a muchos con Appointment
 
-    @Builder
+    @OneToMany(mappedBy = "employeeCreator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Note> notes; // Relación uno a muchos con Appointment
+
+
+
     public Employee(Integer userId, String firstName, String middleName, String lastName,
             String secondLastName, String dniNumber, LocalDate birthdate, String email,
-            String phone, Integer userImage, boolean isActive, Customer customer, String password, Role role) {
+            String phone, Integer userImage, boolean isActive, String password, Role role) {
         super(userId, firstName, middleName, lastName, secondLastName, dniNumber, birthdate, email, phone, userImage, isActive);
         this.password = password;
         this.role = role;
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
