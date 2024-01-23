@@ -9,6 +9,10 @@ import com.sigepres.servicioweb.entities.Services;
 import com.sigepres.servicioweb.exceptions.DuplicateValueException;
 import com.sigepres.servicioweb.exceptions.ResourceNotFoundException;
 import com.sigepres.servicioweb.repository.IAppointmentRepository;
+import com.sigepres.servicioweb.service.interfaces.IAppointmentService;
+import com.sigepres.servicioweb.service.interfaces.ICustomerService;
+import com.sigepres.servicioweb.service.interfaces.IEmployeeService;
+import com.sigepres.servicioweb.service.interfaces.IServicesService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,9 +51,9 @@ public class AppointmentServiceImpl implements IAppointmentService {
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO appointmentRequestDTO) {
 
         // Validación que exista de Cliente, Empleado y Servicio
-        Customer customer =  customerService.getCustomerById(appointmentRequestDTO.getCustomerId());
+        Customer customer = customerService.getCustomerById(appointmentRequestDTO.getCustomerId());
         Services service = servicesService.getServicesById(appointmentRequestDTO.getServiceId());
-        Employee employee = employeeService.getEmployeeById(appointmentRequestDTO.getEmployeeId());
+        Employee employee = employeeService.getEmployeeEntityById(appointmentRequestDTO.getEmployeeId());
 
         // Verificación de disponibilidad, verificar si el empleado esta disponible en fecha y hora
         validateAvailability(appointmentRequestDTO);
@@ -64,7 +68,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         return modelMapper.map(appointment, AppointmentResponseDTO.class);
     }
 
-    private Appointment mapToAppointment(AppointmentRequestDTO appointmentRequestDTO, Customer customer, Services service, Employee employee) {
+   private Appointment mapToAppointment(AppointmentRequestDTO appointmentRequestDTO, Customer customer, Services service, Employee employee) {
         Appointment appointment = modelMapper.map(appointmentRequestDTO, Appointment.class);
         appointment.setCustomer(customer);
         appointment.setService(service);
@@ -83,7 +87,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .existsByEmployeeIdAndAppointmentDateAndTimeRange
                         (employeeId, appointmentDatetime, appointmentStartTime, appointmentEndTime);
         if (isAppointmentExists) {
-            throw new DuplicateValueException("Ya hay una cita asignada para el empleado en la misma fecha y hora.");
+            throw new DuplicateValueException("Ya existe una cita programada para la misma fecha, hora y empleado. Por favor, elija otra hora o fecha.");
         }
     }
 
@@ -100,7 +104,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
     @Override
     public List<AppointmentResponseDTO>  getAppointmentsByEmployeeId(Integer employeeId) {
         // Validar si existe empleado
-        employeeService.getEmployeeById(employeeId);
+        employeeService.getEmployeeEntityById(employeeId);
 
         List<Appointment> appointments = appointmentRepository.findByEmployeeId(employeeId);
 
@@ -159,7 +163,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
     public List<AppointmentResponseDTO> getAppointmentsByEmployeeAndDates(Integer employeeId, LocalDate startDate, LocalDate endDate) {
 
         // validar si existe empleado
-        employeeService.getEmployeeById(employeeId);
+        employeeService.getEmployeeEntityById(employeeId);
 
         List<Appointment> appointments = appointmentRepository.findAppointmentsByEmployeeAndDateBetween(employeeId, startDate, endDate);
 
@@ -182,7 +186,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     public List<AppointmentResponseDTO> getAppointmentsByEmployeeAndDate(Integer employeeId, LocalDate date){
         // validar si existe empleado
-        employeeService.getEmployeeById(employeeId);
+        employeeService.getEmployeeEntityById(employeeId);
 
         List<Appointment> appointments = appointmentRepository.findAppointmentsByEmployeeAndDate(employeeId, date);
 
@@ -223,16 +227,16 @@ public class AppointmentServiceImpl implements IAppointmentService {
     }
 
 
-/*
+
     @Override
     public void deleteAppointment(int appointmentId) {
         if (!appointmentRepository.existsById(appointmentId)) {
-            throw new EntityNotFoundException("Cita no encontrada con ID: " + appointmentId);
+            throw new ResourceNotFoundException("Cita no encontrada con ID: " + appointmentId);
         }
 
         appointmentRepository.deleteById(appointmentId);
     }
-*/
+
 
 
 }
