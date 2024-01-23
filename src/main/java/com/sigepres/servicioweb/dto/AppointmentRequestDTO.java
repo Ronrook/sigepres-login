@@ -23,10 +23,10 @@ public class AppointmentRequestDTO {
     @Future(message = "La fecha de la cita debe ser en el futuro.")
     private LocalDate appointmentDate;
 
-    @NotNull(message = "La de inicio de la cita no puede ser nula.")
+    @NotNull(message = "La hora de inicio de la cita no puede ser nula.")
     private Time appointmentStartTime;
 
-    @NotNull(message = "La de final de la cita no puede ser nula.")
+    @NotNull(message = "La hora final de la cita no puede ser nula.")
     private Time appointmentEndTime;
 
     @NotNull(message = "El ID del cliente no puede ser nulo.")
@@ -37,4 +37,6 @@ public class AppointmentRequestDTO {
 
     @NotNull(message = "El ID del empleado no puede ser nulo.")
     private Integer employeeId;
+
+    private boolean isAttended;
 }
