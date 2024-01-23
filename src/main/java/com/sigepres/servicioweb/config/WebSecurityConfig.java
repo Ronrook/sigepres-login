@@ -39,7 +39,7 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authRequest ->
                 authRequest
-                    .requestMatchers("/api/v1/**").permitAll() // permite el acceso a cualquier ruta que comience con este String
+                    .requestMatchers("/api/v1/auth/login").permitAll() // permite el acceso a cualquier ruta que comience con este String
                     .anyRequest().authenticated() // Otras rutas se deben autenticar
             )
                 .sessionManagement(sessionManager->
