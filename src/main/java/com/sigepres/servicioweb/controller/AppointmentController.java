@@ -3,6 +3,7 @@ package com.sigepres.servicioweb.controller;
 import com.sigepres.servicioweb.dto.AppointmentRequestDTO;
 import com.sigepres.servicioweb.dto.AppointmentResponseDTO;
 import com.sigepres.servicioweb.service.AppointmentServiceImpl;
+import com.sigepres.servicioweb.service.interfaces.IAppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/appointment")
+@RequestMapping("/api/v1/appointments")
 public class AppointmentController {
 
-    private final AppointmentServiceImpl appointmentService;
+    private final IAppointmentService appointmentService;
 
-    public AppointmentController(AppointmentServiceImpl appointmentService) {
+    public AppointmentController(IAppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
@@ -31,7 +32,7 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.getAppointmentById(appointmentId), HttpStatus.OK);
     }
 
-    @GetMapping("/appointments/employee/{id}")
+    @GetMapping("/employee/{id}")
     public  ResponseEntity<List<AppointmentResponseDTO>> getAppointmentsByEmployeeId(
             @PathVariable("id") Integer employeeId,
             @RequestParam(required = false) LocalDate startDate,
@@ -43,7 +44,7 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.getAppointmentsByEmployeeAndDates(employeeId, startDate, endDate), HttpStatus.OK);
     }
 
-    @GetMapping("/appointments/customer/{id}")
+    @GetMapping("customer/{id}")
     public  ResponseEntity<List<AppointmentResponseDTO>> getAppointmentsByCustomerId(
             @PathVariable("id") Integer customerId,
             @RequestParam(required = false) LocalDate startDate,
@@ -56,7 +57,7 @@ public class AppointmentController {
 
     }
 
-    @GetMapping("/appointments")
+    @GetMapping()
     public  ResponseEntity<List<AppointmentResponseDTO>> getAppointmentsBetweenDates(
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate) {
