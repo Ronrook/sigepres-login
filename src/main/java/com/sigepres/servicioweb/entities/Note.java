@@ -1,9 +1,13 @@
 package com.sigepres.servicioweb.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "notes")
 public class Note {
@@ -19,11 +23,11 @@ public class Note {
     private String observations;
 
     @ManyToOne
-    @JoinColumn(name = "employee_creator", nullable = false)
+    @JoinColumn(name = "employee_creator",  referencedColumnName = "employee_id", nullable = false)
     private Employee employeeCreator;
 
     @ManyToOne
     @JoinColumn(name = "history_number", nullable = false)
-    private MedicalHistory medicalHistory;
+    private MedicalRecord medicalRecord;
 
 }
