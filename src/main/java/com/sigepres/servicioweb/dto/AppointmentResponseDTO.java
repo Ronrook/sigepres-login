@@ -10,10 +10,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentResponseDTO {
 
+    private Integer appointmentId;
 
     private LocalDate appointmentDate;
 
@@ -21,9 +23,11 @@ public class AppointmentResponseDTO {
 
     private Time appointmentEndTime;
 
-    private Integer customerId;
+    private  String customerFullName;
 
-    private Integer serviceId;
+    private  String employeeFullName;
 
-    private Integer employeeId;
+    private String serviceName;
+
+    private boolean isAttended;
 }
