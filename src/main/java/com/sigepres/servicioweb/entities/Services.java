@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -15,17 +14,17 @@ public class Services {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
-    private Integer serviceId;
+    private Integer id;
 
     @Column(name = "service_name", nullable = false, length = 45, unique = true)
-    private String serviceName;
+    private String ServiceName;
 
     @Column(name = "description", length = 255)
     private String description;
 
     @Column(name = "service_image")
-    private Integer serviceImage;
+    private Integer image;
 
     @Column(name = "service_price")
-    private Double servicePrice;
+    private Double price;
     }
