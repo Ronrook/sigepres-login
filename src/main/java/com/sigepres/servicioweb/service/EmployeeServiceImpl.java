@@ -3,10 +3,11 @@ package com.sigepres.servicioweb.service;
 import com.sigepres.servicioweb.entities.Employee;
 import com.sigepres.servicioweb.exceptions.ResourceNotFoundException;
 import com.sigepres.servicioweb.repository.IEmployeeRepository;
+import com.sigepres.servicioweb.service.interfaces.IEmployeeService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmployeeServiceImpl implements IEmployeeService{
+public class EmployeeServiceImpl implements IEmployeeService {
 
     private final IEmployeeRepository employeeRepository;
 
@@ -15,7 +16,7 @@ public class EmployeeServiceImpl implements IEmployeeService{
     }
 
     @Override
-    public Employee getEmployeeById(Integer employeeId) {
+    public Employee getEmployeeEntityById(Integer employeeId) {
         return employeeRepository
                 .findById(employeeId)
                 .orElseThrow(
