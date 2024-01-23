@@ -16,5 +16,6 @@ public class LoginRequest {
     @NotBlank(message = "El Email del usuario no debe ser nulo o vacío")
     @Email(message = "El email debe ser valido")
     String email;
+    @NotBlank(message = "El password del usuario no debe ser nulo o vacío")
     String password;
 }
