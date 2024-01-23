@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
@@ -51,4 +52,8 @@ public class User implements Serializable {
     @Column(name = "is_active")
     private boolean isActive;
 
+    public String getUserFullName() {
+        String userFullName = this.getFirstName() + " " + this.getMiddleName() + " " + this.getLastName() + " " + this.getSecondLastName();
+        return userFullName.replace("null","");
+    }
 }
