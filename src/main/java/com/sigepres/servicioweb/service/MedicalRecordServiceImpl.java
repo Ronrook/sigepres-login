@@ -40,8 +40,6 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
             throw new DuplicateValueException("Ya existe Historia clínica para el cliente con id: " + customer.getId());
         }
 
-        // TODO corregir el fallo de apoinment del mapeo con custumer
-
         MedicalRecord medicalRecord = mapToMedicalHistory(medicalHistoryDTO,customer);
 
 
@@ -52,8 +50,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
     }
 
     private MedicalRecord mapToMedicalHistory(MedicalRecordRequestDTO medicalHistoryDTO, Customer customer) {
-        com.sigepres.servicioweb.entities.MedicalRecord medicalRecord = modelMapper.map(medicalHistoryDTO, com.sigepres.servicioweb.entities.MedicalRecord.class);
-        // Configurar la IMedicalRecordRepository
+        MedicalRecord medicalRecord = modelMapper.map(medicalHistoryDTO, MedicalRecord.class);
         medicalRecord.setCustomer(customer);
         medicalRecord.setCreationDate(LocalDate.now());
         medicalRecord.setUpdateDate(LocalDate.now());
