@@ -1,5 +1,6 @@
 package com.sigepres.servicioweb.service;
 
+import com.sigepres.servicioweb.converters.AppointmentConverter;
 import com.sigepres.servicioweb.dto.AppointmentRequestDTO;
 import com.sigepres.servicioweb.dto.AppointmentResponseDTO;
 import com.sigepres.servicioweb.entities.Appointment;
@@ -28,18 +29,18 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     private final IEmployeeService employeeService;
 
-    private final IServicesService servicesService;
+    private final AppointmentConverter appointmentConverter;
 
     @Autowired
     private final ModelMapper modelMapper;
 
 
     public AppointmentServiceImpl(IAppointmentRepository appointmentRepository, ICustomerService customerService,
-                                  IEmployeeService employeeService,  IServicesService servicesService, ModelMapper modelMapper) {
+                                  IEmployeeService employeeService, AppointmentConverter appointmentConverter, ModelMapper modelMapper) {
         this.appointmentRepository = appointmentRepository;
         this.customerService = customerService;
         this.employeeService = employeeService;
-        this.servicesService = servicesService;
+        this.appointmentConverter = appointmentConverter;
         this.modelMapper = modelMapper;
     }
 
@@ -47,17 +48,9 @@ public class AppointmentServiceImpl implements IAppointmentService {
     @Override
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO appointmentDTO) {
         validateAvailability(appointmentDTO);
-        Appointment appointment = this.appointmentDtoToAppointment(appointmentDTO);
+        Appointment appointment =  appointmentConverter.fromDto(appointmentDTO);
         appointmentRepository.save(appointment);
-        return modelMapper.map(appointment, AppointmentResponseDTO.class);
-    }
-
-   private Appointment appointmentDtoToAppointment(AppointmentRequestDTO appointmentDTO) {
-        Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
-        appointment.setCustomer(customerService.getCustomerById(appointmentDTO.getCustomerId()));
-        appointment.setService(servicesService.getServicesById(appointmentDTO.getServiceId()));
-        appointment.setEmployee(employeeService.getEmployeeEntityById(appointmentDTO.getEmployeeId()));
-        return appointment;
+        return appointmentConverter.fromEntity(appointment);
     }
 
     private void validateAvailability(AppointmentRequestDTO appointmentDTO) {
@@ -81,7 +74,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
     public AppointmentResponseDTO getAppointmentById(Integer appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cita no encontrada."));
-        return modelMapper.map(appointment, AppointmentResponseDTO.class);
+        return appointmentConverter.fromEntity(appointment);
     }
 
     // Obtener todas las citas de un empleado
@@ -166,10 +159,10 @@ public class AppointmentServiceImpl implements IAppointmentService {
             throw new ResourceNotFoundException("Cita con id " + appointmentId + "no existe");
         }
         this.validateAvailability(appointmentDTO);
-        Appointment updatedAppointment = this.appointmentDtoToAppointment(appointmentDTO);
+        Appointment updatedAppointment = appointmentConverter.fromDto(appointmentDTO);
         updatedAppointment.setAppointmentId(appointmentId);
         appointmentRepository.save(updatedAppointment);
-        return modelMapper.map(updatedAppointment, AppointmentResponseDTO.class);
+        return appointmentConverter.fromEntity(updatedAppointment);
     }
 
     @Override
